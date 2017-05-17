@@ -1,4 +1,4 @@
-#include "define.h"
+#include "configuration.h"
 #include "startup.h"
 #include "imu.h"
 #include "multipurpose.h"
@@ -13,10 +13,21 @@ void setup() {
   startI2CBUS();
   startRS232Bus();
   startSDCard();
+  Serial.begin(9600); //debugging through arduino
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  bool solenoidOpen = false;
+  bool GSwitchActive = true;
+
+  
+  if(!solenoidOpen){
+      if(GSwitchActive){
+        openSolenoidForFlight();
+        solenoidOpen = true;
+    }
+  }
+ 
   
 
 

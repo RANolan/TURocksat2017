@@ -17,6 +17,7 @@
 
 //Air Control
 #define AC_SOLENOID 34
+#define MINUTES_SOLENOID_OPEN 10
 
 //MultiPurpose Chip Select
 #define UV_CONV 24
@@ -27,6 +28,7 @@
 #define GC1_CS 30
 #define GC2_CS 32
 #define GC_RST 26
+#define SECONDS_UNTIL_GC_RESET 100
 
 //IMU
 #define IMU_CS 28
