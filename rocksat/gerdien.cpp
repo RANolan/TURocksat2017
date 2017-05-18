@@ -49,13 +49,15 @@ void reset(){
   // set compare match register for 1hz increments
   OCR2A = 255;// = (16*10^6) / (1*1024) - 1 (must be <65536)
   // turn on CTC mode
-  TCCR2B |= (1 << WGM12);
+  TCCR2A |= (1 << WGM12);
   // Set CS12 and CS10 bits for 1024 prescaler
   TCCR2B |= (1 << CS12) | (1 << CS10);  
   // enable timer compare interrupt
   TIMSK2 |= (1 << OCIE2A);
   interrupts(); //ENABLE INTERRUPT
-  digitalWrite(AC_SOLENOID, HIGH);
+  digitalWrite(GC_RST, HIGH);
+  delayMicroseconds(1);
+  digitalWrite(GC_RST, LOW);
 }
 
 ISR(TIMER2_COMPA_vect){

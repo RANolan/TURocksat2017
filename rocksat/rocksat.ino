@@ -7,7 +7,13 @@
 #include "flowmeter.h"
 #include "airctrl.h"
 
+  bool solenoidOpen = false;
+  bool GSwitchActive = true;
+  float PS_Data[2];
 void setup() {
+
+
+  
   setupPinDirections();
   startSPIBus();
   startI2CBUS();
@@ -17,18 +23,26 @@ void setup() {
 }
 
 void loop() {
-  bool solenoidOpen = false;
-  bool GSwitchActive = true;
+
 
   
   if(!solenoidOpen){
       if(GSwitchActive){
         openSolenoidForFlight();
+        Serial.println("Solenoids Opened");
         solenoidOpen = true;
     }
   }
  
+  getPressureTempData(PS_Data);
+  Serial.println("Pressure");
+  Serial.println(PS_Data[0]);
+  Serial.println("Temperature");
+  Serial.println(PS_Data[1]);
+  Serial.println("UV Raw Data");
+  Serial.println(bitBangTheBus(), HEX);
   
+  delay(1000);
 
 
 }

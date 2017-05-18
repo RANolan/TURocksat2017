@@ -1,30 +1,33 @@
 #include <Wire.h>
 #include "configuration.h"
+#include <Arduino.h>
 
 //takes a pointer to a two element sort array where element 0 conatins two bytes of pressure data (14 bits) and element 1 contains 2 bytes of temperature data (11 bits)
-void getPressureTempData(unsigned short* data){
+void getPressureTempData(float* data){
   unsigned short readings;
+
+  //pressure
   Wire.beginTransmission(PS_ADDR);
-  
+  Wire.requestFrom(PS_ADDR, 4);
   readings = Wire.read();  // receive high byte (overwrites previous reading)
   readings = readings << 8;    // shift high byte to be high 8 bits
   readings |= Wire.read(); // receive low byte as lower 8 bits
   readings = readings & 0x3FFF; //bitmask for output  
-  
+  //Serial.println("Pressure valid");
+  //Serial.println(readings);
   //add conversion here to actual float value and update data type
-  
-  data[0] = readings;
-
+  //DEBUG -10 for pressure
+  data[0] = float(((float(float(readings) - 1628.3) * 80)/float(16383 * 0.80)));// + 10);
+  readings = 0;
+//temperature
   readings = Wire.read();  // receive high byte (overwrites previous reading)
   readings = readings << 8;    // shift high byte to be high 8 bits
   readings |= Wire.read(); // receive low byte as lower 8 bits
-  readings >> 5;
-  readings = readings & 0x07FF; //bitmask for output
-  
+  readings = readings >> 5;
+  //Serial.println("Temperature Valid");
+  //Serial.println(readings);
   //add conversion here to actual float value
-  
-  data[1] = readings;
-   
+  data[1] = float( (float(float(readings) * 200)/2047) - 50);
 
 
 };

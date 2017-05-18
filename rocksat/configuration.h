@@ -17,12 +17,13 @@
 
 //Air Control
 #define AC_SOLENOID 34
-#define MINUTES_SOLENOID_OPEN 10
+#define MINUTES_SOLENOID_OPEN 1
 
 //MultiPurpose Chip Select
 #define UV_CONV 24
 #define TEVISO 3
 #define UV_CLK 4
+#define UV_DATA 48
 
 //Gerdien Condenser
 #define GC1_CS 30
