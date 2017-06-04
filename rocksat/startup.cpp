@@ -42,6 +42,9 @@ void setupPinDirections() {
   //IMU
   pinMode(IMU_CS, OUTPUT);
   digitalWrite(IMU_CS, HIGH);
+  
+  pinMode(IMU_TRIGGER, OUTPUT);
+  digitalWrite(IMU_TRIGGER, LOW);
 
   //SD Card
   pinMode(SD_CS, OUTPUT);

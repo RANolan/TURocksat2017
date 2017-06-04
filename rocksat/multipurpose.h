@@ -3,6 +3,7 @@
 
 unsigned int bitBangTheBus();
 
-unsigned int getRadData();
+float getRadData();
+void setup_rad();
 
 #endif

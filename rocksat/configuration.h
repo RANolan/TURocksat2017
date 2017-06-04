@@ -26,13 +26,14 @@
 #define UV_DATA 48
 
 //Gerdien Condenser
-#define GC1_CS 30
-#define GC2_CS 32
+#define GC1_CS 30  //positive ions
+#define GC2_CS 32 //neagtive ions
 #define GC_RST 26
 #define SECONDS_UNTIL_GC_RESET 100
 
 //IMU
 #define IMU_CS 28
+#define IMU_TRIGGER 46
 
 //SD Card
 #define SD_CS 53
