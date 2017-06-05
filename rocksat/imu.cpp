@@ -1,7 +1,7 @@
 #include "configuration.h"
 #include <SPI.h>
 
-void triggerDataCollection(){
+void triggerIMUDataCollection(){
 
   digitalWrite(IMU_TRIGGER, HIGH);
   delayMicroseconds(1);

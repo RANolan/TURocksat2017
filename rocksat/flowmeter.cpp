@@ -12,9 +12,31 @@ Serial3.begin(38400, SERIAL_8N1, true );
 
 }
 
+bool calibrateFlow(){
+  bool didRespond;
+  Serial3.write9bit(0x19D);
+  Serial3.write9bit(0x72);
+  Serial3.write9bit(0x01);
+  Serial3.write9bit(0x55);
+  Serial3.write9bit(0xC8);
+  Serial3.write9bit(0x0D);
+  data1 = Serial3.read();
+  if(Serial3.available()){
+    data1 = Serial3.read();
+    data1 = data1 & 0xFF;
+    if(data1 = 0x9D)
+      didRespond = true;
+      didRespond = false; 
+  }
+  while(Serial3.available() > 0)
+      Serial3.read();
+  return didRespond;
+}
 
 void get_flowdata(){
-  
+
+
+  // need to remove the extra bit and then calculate
   unsigned long time1, time2;
   Serial.println("getting data");
   time2 = micros();
@@ -32,7 +54,7 @@ void get_flowdata(){
   //data7 = Serial2.read();
   //data8 = Serial2.read();
 
-  Serial.println(data1, HEX);
+  //Serial.println(data1, HEX);
   
 }
   time1 = micros();

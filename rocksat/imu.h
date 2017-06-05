@@ -2,7 +2,7 @@
 #define IMU_H_
 
 
-void triggerDataCollection();
+void triggerIMUDataCollection();
 void getImuData(short* );
 
 #endif

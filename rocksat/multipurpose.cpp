@@ -10,10 +10,11 @@ volatile unsigned int fiveSecondCounter; //use array and write each value down t
 volatile unsigned int oneMinuteCounter;
 volatile unsigned int sevenCount;
 volatile unsigned long timeStart, timeEnd;
+volatile bool ready;
 
 void radEvent();
 
-unsigned int bitBangTheBus(){
+unsigned int bitBangTheUVBus(){
   unsigned int data = 0;
   unsigned int temp = 0;
   
@@ -63,7 +64,8 @@ ISR(TIMER5_COMPA_vect){
   //oneSecondCounter = rad_pings;
   //rad_pings = 0;
   TCNT5 = 0;
-};
+  ready = true;
+  };
 
 //void radEvent(){
 //  rad_pings++;
@@ -72,24 +74,23 @@ ISR(TIMER5_COMPA_vect){
 //
 //
 
-/*
-void radEvent(){
-  rad_pings++;
-};
-*/
 
-float getRadData(){
+void getRadData(float* data){
+  if(!ready)
+    {
+      *data = -1;
+    }
+  else
+  {
   unsigned long dt;
-  //counts/time in seconds / 18.25
-  //Serial.println("Rad pings");
-  //Serial.println(oneSecondCounter);
-  Serial.println("conversion");
+  //counts/time in seconds / 18.25 for calibration machine calculations... 18 - 18.25
   //float data =  float(((float)oneSecondCounter*60.0/1/calFactor)* 10);  
    dt = timeEnd- timeStart;
 
    //this float data is in uR... need to divive my 1000 for mRem
-   float data = (float)MAXCNT*60.0*10000000.0/(float)dt/calFactor; 
-   Serial.println(data);
-  return 0;//data; //oneSecondCounter;//data;
+   *data = (float)((float)MAXCNT*60.0*10000000.0/(float)dt/calFactor); 
+   ready = false;
+   //Serial.println(data);
+  }
 };
 

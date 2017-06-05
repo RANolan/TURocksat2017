@@ -17,7 +17,7 @@
 
 //Air Control
 #define AC_SOLENOID 34
-#define MINUTES_SOLENOID_OPEN 1
+#define MINUTES_SOLENOID_OPEN 5
 
 //MultiPurpose Chip Select
 #define UV_CONV 24
@@ -33,7 +33,7 @@
 
 //IMU
 #define IMU_CS 28
-#define IMU_TRIGGER 46
+#define IMU_TRIGGER 49
 
 //SD Card
 #define SD_CS 53

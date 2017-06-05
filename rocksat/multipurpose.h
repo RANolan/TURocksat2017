@@ -1,9 +1,9 @@
 #ifndef MULTIPURPOSE_H_   /* Include guard */
 #define MULTIPURPOSE_H_
 
-unsigned int bitBangTheBus();
+unsigned int bitBangTheUVBus();
 
-float getRadData();
+void getRadData(float*);
 void setup_rad();
 
 #endif
