@@ -12,19 +12,20 @@
 //
 //
 //
-//  CHECK ALL CSn1 2 3 pins
+//  CHECK ALL CSn1 2 5 pins
+//
+//timer 3 and 4 avaailable
 //
 //
-//
-  bool solenoidOpen = false;
-  bool GSwitchActive = true;
-  float PS_Data[2];
-  int i = 0;
-  unsigned short* IMU;
-  float radiationData;
-  
+bool solenoidOpen = false;
+bool GSwitchActive = true;
+float PS_Data[2];
+int i = 0;
+unsigned short* IMU;
+float radiationData;
+
 void setup() {
-  
+
   setupPinDirections();
   startSPIBus();
   startI2CBUS();
@@ -37,18 +38,18 @@ void setup() {
   //digitalWrite(GC_RST, HIGH);
   //delay(1000);
   //digitalWrite(GC_RST, LOW);
-  }
+}
 
 void loop() {
-  
-  if(!solenoidOpen){
-      if(GSwitchActive){
-        openSolenoidForFlight();
-        Serial.println("Solenoids Opened");
-        solenoidOpen = true;
+
+  if (!solenoidOpen) {
+    if (GSwitchActive) {
+      openSolenoidForFlight();
+      Serial.println("Solenoids Opened");
+      solenoidOpen = true;
     }
   }
-  
+
   //triggerIMUDataCollection();
   getPressureTempData(PS_Data);
   Serial.println("Pressure");
@@ -58,33 +59,35 @@ void loop() {
   Serial.println("UV Raw Data");
   Serial.println(bitBangTheUVBus(), HEX);
   //Serial.println("Reset Gerdien Condender");
-  //Serial.println("Raw Uncalibrated Positive Ion");
-  //Serial.println(getGC1Data(), HEX);
-  //Serial.println("Raw Uncalibrated Negative Ion");
-  //Serial.println(getGC2Data(), HEX);
-  //i++;
-  //if(i > 25){
-  //  digitalWrite(GC_RST, HIGH);
-  //  delay(1000);
-  //  digitalWrite(GC_RST, LOW);
-  //  i = 0;
- // }
+  Serial.println("Raw Uncalibrated Positive Ion");
+  Serial.println(getGC1Data(), HEX);
+  Serial.println("Raw Uncalibrated Negative Ion");
+  Serial.println(getGC2Data(), HEX);
+  i++;
+  if(i > 25){
+    Serial.println("Reset GC");
+    digitalWrite(GC_RST, HIGH);
+    delay(1000);
+    digitalWrite(GC_RST, LOW);
+    i = 0;
+   }
   //digitalWrite(GC_RST, LOW);
   //delay(1000);
-  
+
   getRadData(&radiationData);
-  if( radiationData > 0){
-  Serial.println("UV");
-  Serial.println(radiationData);
+  if ( radiationData > 0) {
+    Serial.println("UV");
+    Serial.println(radiationData);
   }
-  get_flowdata();
+  Serial.println("Flow Rate in SLPM");
+  Serial.println(get_flowdata());
   //getImuData(IMU);
   //for(int i = 0; ; i ++){
   //    if(IMU[i] != null)
   //      Serial.println(IMU);
-    
+
   //}
-  
+
   delay(1000);
 
 
