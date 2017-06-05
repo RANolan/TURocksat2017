@@ -3,6 +3,6 @@
 
 bool calibrateFlow;
 void setup_flow();
-void get_flowdata();
+float get_flowdata();
 
 #endif
