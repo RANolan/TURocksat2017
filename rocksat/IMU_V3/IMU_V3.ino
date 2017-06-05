@@ -1,7 +1,6 @@
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_L3GD20_U.h>
-#include <Adafruit_HMC5883_U.h>
+#include "Adafruit_Sensor.h"
+#include "Adafruit_HMC5883_U.h"
 
 int ReadAxis(int);
 
