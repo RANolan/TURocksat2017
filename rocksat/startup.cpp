@@ -69,6 +69,7 @@ void startRS232Bus() {
 
 //Starts SD card
 void startSDCard(){
+  //make sure for SD.begin that the SD_CS is an arguement as it can cause problems elsewhere and the SD card will not work
   SD.begin(SD_CS);
 };
 

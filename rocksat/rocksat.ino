@@ -30,7 +30,7 @@ void setup() {
   startSPIBus();
   startI2CBUS();
   startRS232Bus();
-  //startSDCard();
+  startSDCard();
   Serial.begin(9600); //debugging through arduino
   //reset();
   setup_rad();
@@ -84,8 +84,6 @@ void loop() {
   //getImuData(IMU);
   //for(int i = 0; ; i ++){
   //    if(IMU[i] != null)
-  //      Serial.println(IMU);
-
   //}
 
   delay(1000);

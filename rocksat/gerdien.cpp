@@ -26,7 +26,6 @@ unsigned long getGC2Data(){
   unsigned long data;
   SPI.beginTransaction(SPISettings(150000, MSBFIRST, SPI_MODE0));
   digitalWrite(GC2_CS, LOW);
-  digitalWrite(GC1_CS, LOW);
   data = SPI.transfer(0);
   data = data << 8;
   data |= SPI.transfer(0);

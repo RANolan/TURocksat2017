@@ -1,3 +1,5 @@
+#ifndef CONFIGURATION_H_   /* Include guard */
+#define CONFIGURATION_H_
 
 
 //SPI Bus
@@ -37,3 +39,6 @@
 
 //SD Card
 #define SD_CS 53
+
+
+#endif

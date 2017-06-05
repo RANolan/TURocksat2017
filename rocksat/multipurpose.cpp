@@ -12,7 +12,7 @@ volatile unsigned int sevenCount;
 volatile unsigned long timeStart, timeEnd;
 volatile bool ready;
 
-void radEvent();
+//void radEvent();
 
 unsigned int bitBangTheUVBus(){
   unsigned int data = 0;
