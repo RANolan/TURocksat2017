@@ -1,6 +1,9 @@
 #include <Wire.h>
 #include "Adafruit_Sensor.h"
 #include "Adafruit_HMC5883_U.h"
+#include "Adafruit_L3GD20_U.h"
+#include "Adafruit_LSM303_U.h"
+#include <SPI.h>
 
 int ReadAxis(int);
 
@@ -12,18 +15,18 @@ const int xInput = A0;
 const int yInput = A1;
 const int zInput = A2; 
 
-float xAccel;
-float yAccel;
-float zAccel;
+volatile float xAccel;
+volatile float yAccel;
+volatile float zAccel;
 
-float xGyro;
-float yGyro;
-float zGyro;
+volatile float xGyro;
+volatile float yGyro;
+volatile float zGyro;
 
-float xMag;
-float yMag;
-float zMag;
-float headingDegrees;
+volatile float xMag;
+volatile float yMag;
+volatile float zMag;
+volatile float headingDegrees;
 
 // Raw Ranges:
 // initialize to mid-range and allow calibration to
