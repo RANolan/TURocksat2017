@@ -10,7 +10,7 @@ void triggerIMUDataCollection(){
 }
 
 
-void getImuData(unsigned short* data){
+void getImuData(byte* data){
 
 //serial bus data stored into array
   unsigned short comms;
@@ -20,8 +20,9 @@ void getImuData(unsigned short* data){
   data[0] = comms;
   comms = SPI.transfer(0);
   data[1] = comms;
-  comms = SPI.transfer(0);
-  data[2] = comms;
+  Serial.println(data[0]);
+  Serial.println(data[1]);
+  
   delayMicroseconds(1);
   digitalWrite(IMU_CS, HIGH);
   SPI.endTransaction();

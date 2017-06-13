@@ -28,6 +28,7 @@ void setupPinDirections() {
   pinMode(UV_CLK, OUTPUT);
   pinMode(UV_CONV, OUTPUT);
   pinMode(TEVISO, INPUT);
+  pinMode(UV_DATA, INPUT);
   digitalWrite(UV_CLK, LOW);
   digitalWrite(UV_CONV, HIGH);
 

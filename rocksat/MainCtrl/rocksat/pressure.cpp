@@ -17,7 +17,14 @@ void getPressureTempData(float* data){
   //Serial.println(readings);
   //add conversion here to actual float value and update data type
   //DEBUG -10 for pressure
-  data[0] = float((((float(float(readings) - 1628.3) * 80)/float(16383 * 0.80))) + 10);
+  Serial.println("Raw Pressure");
+  Serial.println(readings,HEX);
+  //this is pressure for differential
+  data[0] = float(-1 * (((float(float(readings) - 1628.3) * 24)/float(16383 * 0.80))) - 12);
+  
+  //this is pressure for 0-100 single port
+  //data[0] = float((((float(float(readings) - 1628.3) * 80)/float(16383 * 0.80))) + 10);
+  
   readings = 0;
 //temperature
   readings = Wire.read();  // receive high byte (overwrites previous reading)
