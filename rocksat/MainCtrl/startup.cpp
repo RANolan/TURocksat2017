@@ -28,6 +28,7 @@ void setupPinDirections() {
   pinMode(UV_CLK, OUTPUT);
   pinMode(UV_CONV, OUTPUT);
   pinMode(TEVISO, INPUT);
+  pinMode(UV_DATA, INPUT);
   digitalWrite(UV_CLK, LOW);
   digitalWrite(UV_CONV, HIGH);
 
@@ -68,9 +69,9 @@ void startRS232Bus() {
 };
 
 //Starts SD card
-void startSDCard(){
+bool startSDCard(){
   //make sure for SD.begin that the SD_CS is an arguement as it can cause problems elsewhere and the SD card will not work
-  SD.begin(SD_CS);
+  return SD.begin(SD_CS);
 };
 
 

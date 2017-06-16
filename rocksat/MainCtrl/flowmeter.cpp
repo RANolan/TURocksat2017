@@ -59,6 +59,7 @@ float get_flowdata() {
     FRL = Serial3.read() & 0xFF;
     Serial3.read();
     Serial3.read();
+    Serial.println("flowdatagood");
     flowResult = float(float((FRH * 65536) +  (FRM * 256) + FRL) / 1000);
   }
 

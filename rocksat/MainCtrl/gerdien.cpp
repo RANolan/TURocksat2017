@@ -11,11 +11,8 @@ unsigned long getGC1Data(){
   data = SPI.transfer(0);
   data = data << 8;
   data |= SPI.transfer(0);
-  data = data >> 3;
+  data = data >> 1;
   data = data & 0x0FFF;
-  //data |= SPI.transfer(0);
-  //data << 8;
-  //data |= SPI.transfer(0);
   delayMicroseconds(1);
   digitalWrite(GC1_CS, HIGH);
   SPI.endTransaction();
@@ -29,12 +26,8 @@ unsigned long getGC2Data(){
   data = SPI.transfer(0);
   data = data << 8;
   data |= SPI.transfer(0);
-  data = data >> 3;
+  data = data >> 1;
   data = data & 0x0FFF;
-  
-  //data = SPI.transfer(0);
-  //data << 8;
-  //data = SPI.transfer(0);
   delayMicroseconds(1);
   digitalWrite(GC2_CS, HIGH);
   SPI.endTransaction();

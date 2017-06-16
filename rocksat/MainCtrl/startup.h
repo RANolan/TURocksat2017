@@ -21,7 +21,7 @@ void startI2CBUS();
 //start the RS232 UART bus
 void startRS232Bus();
 
-void startSDCard();
+bool startSDCard();
 #endif
 
 
