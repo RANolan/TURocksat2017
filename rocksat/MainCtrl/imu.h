@@ -3,6 +3,6 @@
 
 
 void triggerIMUDataCollection();
-void getImuData(byte* );
+void getImuData(short* );
 
 #endif

@@ -28,10 +28,10 @@
 #define UV_DATA 48
 
 //Gerdien Condenser
-#define GC1_CS 30  //negative ions
-#define GC2_CS 32 //positive ions
+#define GC1_CS 30  //positive ions
+#define GC2_CS 32 //neagtive ions
 #define GC_RST 26
-#define SECONDS_UNTIL_GC_RESET 10
+#define SECONDS_UNTIL_GC_RESET 100
 
 //IMU
 #define IMU_CS 28
