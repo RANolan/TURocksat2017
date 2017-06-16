@@ -26,7 +26,7 @@ const int sampleSize = 10;
 
 const int interruptPin = 3;
 volatile int i = 0;
-volatile int array[36];
+volatile int array[4];
 volatile int state;
 volatile int f;
 
@@ -92,24 +92,24 @@ void readData()
   switch(state)
   {
     case 0: 
-   Serial.println("C0");
-        /* Get a new sensor event */ 
-        sensors_event_t gyroEvent; 
-        sensors_event_t magEvent;
-  
-        gyro.getEvent(&gyroEvent);
-        mag.getEvent(&magEvent);
+//   Serial.println("C0");
+//        /* Get a new sensor event */ 
+//        sensors_event_t gyroEvent; 
+//        sensors_event_t magEvent;
+//  
+//        gyro.getEvent(&gyroEvent);
+//        mag.getEvent(&magEvent);
       
         f = 0;
         
         xRaw = ReadAxis(xInput);
-        yRaw = ReadAxis(yInput);
-        zRaw = ReadAxis(zInput);
+//        yRaw = ReadAxis(yInput);
+//        zRaw = ReadAxis(zInput);
 
         // re-scale to fractional Gs
         xAccel.number = (map(xRaw, xRawMin, xRawMax, -1000, 1000)) / 1000.0;
-        yAccel.number = (map(yRaw, yRawMin, yRawMax, -1000, 1000)) / 1000.0;
-        zAccel.number = (map(zRaw, zRawMin, zRawMax, -1000, 1000)) / 1000.0;
+//        yAccel.number = (map(yRaw, yRawMin, yRawMax, -1000, 1000)) / 1000.0;
+//        zAccel.number = (map(zRaw, zRawMin, zRawMax, -1000, 1000)) / 1000.0;
 
         for(int j = 3; j >= 0; j--)
         {
@@ -117,70 +117,69 @@ void readData()
           f++;
         }
           
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yAccel.b[j];
-          f++;
-        }
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = yAccel.b[j];
+//          f++;
+//        }
+//
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = zAccel.b[j];
+//          f++;
+//        }
 
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zAccel.b[j];
-          f++;
-        }
+//      /* Display the results (speed is measured in rad/s) */
+//      xGyro.number = gyroEvent.gyro.x;
+//      yGyro.number = gyroEvent.gyro.y;
+//      zGyro.number = gyroEvent.gyro.z;
 
-      /* Display the results (speed is measured in rad/s) */
-      xGyro.number = gyroEvent.gyro.x;
-      yGyro.number = gyroEvent.gyro.y;
-      zGyro.number = gyroEvent.gyro.z;
+//      for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = xGyro.b[j];
+//          f++;
+//        }
+//
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = yGyro.b[j];
+//          f++;
+//        }
+//
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = zGyro.b[j];
+//          f++;
+//        }
 
-      for(int j = 3; j >= 0; j--)
-        {
-          array[f] = xGyro.b[j];
-          f++;
-        }
+//      /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
+//      xMag.number = magEvent.magnetic.x;
+//      yMag.number = magEvent.magnetic.y;
+//      zMag.number = magEvent.magnetic.z;
 
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yGyro.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zGyro.b[j];
-          f++;
-        }
-
-      /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
-      xMag.number = magEvent.magnetic.x;
-      yMag.number = magEvent.magnetic.y;
-      zMag.number = magEvent.magnetic.z;
-
-      for(int j = 3; j >= 0; j--)
-        {
-          array[f] = xMag.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yMag.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zMag.b[j];
-          f++;
-        }
+//      for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = xMag.b[j];
+//          f++;
+//        }
+//
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = yMag.b[j];
+//          f++;
+//        }
+//
+//        for(int j = 3; j >= 0; j--)
+//        {
+//          array[f] = zMag.b[j];
+//          f++;
+//        }
         
-        i = 0;
+        i = 1;
         state = 1;
         break;
         
     case 1:
-      Serial.println("c1");
         pinMode(MISO,INPUT);
         state = 0;
         break;
@@ -202,13 +201,11 @@ int ReadAxis(int axisPin)
 //SPI Interrupt Routine
 ISR (SPI_STC_vect)
 {
-    Serial.println("SPI");
   pinMode(MISO, OUTPUT);
   SPDR = array[i];
   i++;
   
-  if(i > 35)
+  if(i > 3)
     i = 0;
-
 }
 
