@@ -16,12 +16,11 @@ volatile bool ready;
 
 unsigned int bitBangTheUVBus(){
   unsigned int data = 0;
-  unsigned int temp = 0;
   
   digitalWrite(UV_CONV, LOW);
   delayMicroseconds(1);
   digitalWrite(UV_CONV, HIGH);
-  delayMicroseconds(1);
+  delayMicroseconds(6);
 
   for(int i = 0; i < 16; i++){
     digitalWrite(UV_CLK, HIGH);
@@ -31,6 +30,7 @@ unsigned int bitBangTheUVBus(){
     data |= digitalRead(UV_DATA);
     data = data << 1;
     }
+    
 
   return data;
 };

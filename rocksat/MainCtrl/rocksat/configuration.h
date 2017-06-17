@@ -19,7 +19,7 @@
 
 //Air Control
 #define AC_SOLENOID 34
-#define MINUTES_SOLENOID_OPEN 5
+#define MINUTES_SOLENOID_OPEN 8
 
 //MultiPurpose Chip Select
 #define UV_CONV 24
@@ -31,10 +31,10 @@
 #define GC1_CS 30  //negative ions
 #define GC2_CS 32 //positive ions
 #define GC_RST 26
-#define SECONDS_UNTIL_GC_RESET 10
+#define SECONDS_UNTIL_GC_RESET 4
 
 //IMU
-#define IMU_CS 28
+#define IMU_GSWITCH 28
 #define IMU_TRIGGER 49
 
 //SD Card

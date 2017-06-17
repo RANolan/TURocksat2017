@@ -1,21 +1,26 @@
 
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_L3GD20_U.h>
-#include <Adafruit_HMC5883_U.h>
+#include "Adafruit_Sensor.h"
+#include "Adafruit_L3GD20_U.h"
+#include "Adafruit_HMC5883_U.h"
+#include <SdFat.h>
 
 int ReadAxis(int);
+
+char filename[20] = "DATA00.CSV";;
+SdFat card;
+SdFile dataset;
+
+String csvFileHeader = "Time, X Accel, Y Accel, Z Accel, X Gyro, Y Gyro, Z Gyro, X Mag, Y Mag, Z Mag";
+String writeData;
+char delimiter = ',';
+
+volatile bool dataReady = false;
 
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_L3GD20_Unified gyro = Adafruit_L3GD20_Unified(20);
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
-
-typedef union
-{
-  float number;
-  uint8_t b[4];
-}FLOATUNION_t;
 
 const int xInput = A0;
 const int yInput = A1;
@@ -24,23 +29,26 @@ const int zInput = A2;
 // Take multiple samples to reduce noise
 const int sampleSize = 10;
 
+const int GSwitch = 4;
 const int interruptPin = 3;
+const int SD_CS = 10;
+
 volatile int i = 0;
 volatile int array[36];
 volatile int state;
 volatile int f;
 
-volatile FLOATUNION_t xAccel;
-volatile FLOATUNION_t yAccel;
-volatile FLOATUNION_t zAccel;
+volatile float xAccel;
+volatile float yAccel;
+volatile float zAccel;
 
-volatile FLOATUNION_t xGyro;
-volatile FLOATUNION_t yGyro;
-volatile FLOATUNION_t zGyro;
+volatile float xGyro;
+volatile float yGyro;
+volatile float zGyro;
 
-volatile FLOATUNION_t xMag;
-volatile FLOATUNION_t yMag;
-volatile FLOATUNION_t zMag;
+volatile float xMag;
+volatile float yMag;
+volatile float zMag;
 
 // Raw Ranges:
 // initialize to mid-range and allow calibration to
@@ -63,36 +71,58 @@ void setup(void)
   
   /* Enable auto-ranging */
   gyro.enableAutoRange(true);
+  SPI.begin();
+
+  while (!card.begin(SD_CS, SPI_FULL_SPEED)) {
+    Serial.println("initialization failed. Things to check:");
+    Serial.println("* is a card inserted?");
+    Serial.println("* is your wiring correct?");
+    Serial.println("* did you change the chipSelect pin to match your shield or module?");
+   
+  }
   
-  // have to send on master in, *slave out*
-  pinMode(MISO, INPUT);
-  pinMode(interruptPin, INPUT);
-  state = 0;
+    for (uint8_t i = 0; i < 100; i++) {
+      filename[4] = i/10 + '0';
+      filename[5] = i%10 + '0';
+      if (!card.exists(filename)) {
+        // only open a new file if it doesn't exist
+        break;  // leave the loop!
+      }
+    }
 
-  // turn on SPI in slave mode
-  SPCR |= _BV(SPE);
+    dataset.open(filename, O_WRITE | O_CREAT | O_AT_END);
+  delay(100);
+  dataset.println(csvFileHeader);
+  dataset.close();
 
-   // turn on interrupts
-  SPCR |= _BV(SPIE);
+  //delay to get ready for valid data;
+  delay(50);
 
-  attachInterrupt(digitalPinToInterrupt(3), readData, RISING);
+  
+//  attachInterrupt(digitalPinToInterrupt(3), readDataStart, RISING);
 
   Serial.begin(9600);
+
+  while(!readDataStart()){
+
+    
+  }
+  digitalWrite(GSwitch, HIGH);
+  delayMicroseconds(100);
+  digitalWrite(GSwitch, LOW);
+  attachInterrupt(digitalPinToInterrupt(3), readData, RISING);
   
 }
 
 void loop(void) 
 {
-  /*does nothing*/
+  digitalWrite(GSwitch, dataReady);
 }
 
 void readData()
 {
-
-  switch(state)
-  {
-    case 0: 
-   Serial.println("C0");
+        
+        dataReady = false;
         /* Get a new sensor event */ 
         sensors_event_t gyroEvent; 
         sensors_event_t magEvent;
@@ -107,84 +137,96 @@ void readData()
         zRaw = ReadAxis(zInput);
 
         // re-scale to fractional Gs
-        xAccel.number = (map(xRaw, xRawMin, xRawMax, -1000, 1000)) / 1000.0;
-        yAccel.number = (map(yRaw, yRawMin, yRawMax, -1000, 1000)) / 1000.0;
-        zAccel.number = (map(zRaw, zRawMin, zRawMax, -1000, 1000)) / 1000.0;
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = xAccel.b[j];
-          f++;
-        }
-          
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yAccel.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zAccel.b[j];
-          f++;
-        }
+        xAccel = (map(xRaw, xRawMin, xRawMax, -1000, 1000)) / 1000.0;
+        yAccel = (map(yRaw, yRawMin, yRawMax, -1000, 1000)) / 1000.0;
+        zAccel = (map(zRaw, zRawMin, zRawMax, -1000, 1000)) / 1000.0;
 
       /* Display the results (speed is measured in rad/s) */
-      xGyro.number = gyroEvent.gyro.x;
-      yGyro.number = gyroEvent.gyro.y;
-      zGyro.number = gyroEvent.gyro.z;
+      xGyro = gyroEvent.gyro.x;
+      yGyro = gyroEvent.gyro.y;
+      zGyro = gyroEvent.gyro.z;
 
-      for(int j = 3; j >= 0; j--)
-        {
-          array[f] = xGyro.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yGyro.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zGyro.b[j];
-          f++;
-        }
 
       /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
-      xMag.number = magEvent.magnetic.x;
-      yMag.number = magEvent.magnetic.y;
-      zMag.number = magEvent.magnetic.z;
+      xMag = magEvent.magnetic.x;
+      yMag = magEvent.magnetic.y;
+      zMag = magEvent.magnetic.z;
 
-      for(int j = 3; j >= 0; j--)
-        {
-          array[f] = xMag.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = yMag.b[j];
-          f++;
-        }
-
-        for(int j = 3; j >= 0; j--)
-        {
-          array[f] = zMag.b[j];
-          f++;
-        }
+      writeData = String(float(micros()/1000),2) + delimiter + String(xAccel, 4) + delimiter + String(yAccel, 4) + delimiter + String(zAccel, 4) + delimiter + String(xGyro, 4) + delimiter + String(yGyro, 4) + delimiter + String(zGyro, 4) + delimiter + String(xMag, 4) + delimiter + String(yMag, 4) + delimiter + String(zMag, 4); 
+      
+      
+      if(dataset.open(filename, O_WRITE | O_CREAT | O_AT_END)){
+      dataset.println(writeData);
+      dataset.close();
+      // print to the serial port too:
+     //Serial.println(writeData);
+    }
+    else{
+      //if card has problem... attempt to reconnect endlessly until it does. Won't get any useful data otherwise.
+      while (!card.begin(SD_CS, SPI_FULL_SPEED)) {
+      }
+    }
         
-        i = 0;
-        state = 1;
-        break;
+        dataReady = true;
+
+}
+
+bool readDataStart(){
+
+        bool HighG = false;
         
-    case 1:
-      Serial.println("c1");
-        pinMode(MISO,INPUT);
-        state = 0;
-        break;
-  }
+        dataReady = false;
+        /* Get a new sensor event */ 
+        sensors_event_t gyroEvent; 
+        sensors_event_t magEvent;
+  
+        gyro.getEvent(&gyroEvent);
+        mag.getEvent(&magEvent);
+      
+        f = 0;
+        
+        xRaw = ReadAxis(xInput);
+        yRaw = ReadAxis(yInput);
+        zRaw = ReadAxis(zInput);
+
+        // re-scale to fractional Gs
+        xAccel = (map(xRaw, xRawMin, xRawMax, -1000, 1000)) / 1000.0;
+        yAccel = (map(yRaw, yRawMin, yRawMax, -1000, 1000)) / 1000.0;
+        zAccel = (map(zRaw, zRawMin, zRawMax, -1000, 1000)) / 1000.0;
+
+      /* Display the results (speed is measured in rad/s) */
+      xGyro = gyroEvent.gyro.x;
+      yGyro = gyroEvent.gyro.y;
+      zGyro = gyroEvent.gyro.z;
+
+
+      /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
+      xMag = magEvent.magnetic.x;
+      yMag = magEvent.magnetic.y;
+      zMag = magEvent.magnetic.z;
+
+      writeData = String(float(micros()/1000),2) + delimiter + String(xAccel, 4) + delimiter + String(yAccel, 4) + delimiter + String(zAccel, 4) + delimiter + String(xGyro, 4) + delimiter + String(yGyro, 4) + delimiter + String(zGyro, 4) + delimiter + String(xMag, 4) + delimiter + String(yMag, 4) + delimiter + String(zMag, 4); 
+      
+      
+      if(dataset.open(filename, O_WRITE | O_CREAT | O_AT_END)){
+      dataset.println(writeData);
+      dataset.close();
+      // print to the serial port too:
+     //Serial.println(writeData);
+    }
+    else{
+      //if card has problem... attempt to reconnect endlessly until it does. Won't get any useful data otherwise.
+      while (!card.begin(SD_CS, SPI_FULL_SPEED)) {
+      }
+    }
+        
+        dataReady = true;
+
+        
+        if(xAccel > 5 | yAccel > 5 | zAccel > 5)
+          HighG = true;
+          
+        return HighG;
 }
 
 int ReadAxis(int axisPin)
@@ -199,16 +241,4 @@ int ReadAxis(int axisPin)
   return reading/sampleSize;
 }
 
-//SPI Interrupt Routine
-ISR (SPI_STC_vect)
-{
-    Serial.println("SPI");
-  pinMode(MISO, OUTPUT);
-  SPDR = array[i];
-  i++;
-  
-  if(i > 35)
-    i = 0;
-
-}
 

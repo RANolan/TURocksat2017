@@ -17,8 +17,8 @@ void getPressureTempData(float* data){
   //Serial.println(readings);
   //add conversion here to actual float value and update data type
   //DEBUG -10 for pressure
-  Serial.println("Raw Pressure");
-  Serial.println(readings,HEX);
+  //Serial.println("Raw Pressure");
+  //Serial.println(readings,HEX);
   //this is pressure for differential
   data[0] = float(-1 * (((float(float(readings) - 1628.3) * 24)/float(16383 * 0.80))) - 12);
   

@@ -41,8 +41,7 @@ void setupPinDirections() {
   digitalWrite(GC_RST, LOW);
 
   //IMU
-  pinMode(IMU_CS, OUTPUT);
-  digitalWrite(IMU_CS, HIGH);
+  pinMode(IMU_GSWITCH, INPUT);
   
   pinMode(IMU_TRIGGER, OUTPUT);
   digitalWrite(IMU_TRIGGER, LOW);
